@@ -1,0 +1,75 @@
+---
+const cases = [
+  {
+    number: "01",
+    href: "/work/contract-retention-api",
+    title: "Contract Retention API",
+    summary: "Apex REST endpoint for SAP-driven contract freezing with conditional pricing. Wrapped DML and notifications in an error-isolated transaction.",
+    tags: ["Apex REST", "SAP Integration", "Async"]
+  },
+  {
+    number: "02",
+    href: "/work/third-party-collections-deadlock",
+    title: "Third-Party Collections Deadlock",
+    summary: "Production bug in an Experience Cloud LWC where operators couldn't renegotiate overdue invoices. Root cause turned out to be JavaScript using Apex syntax.",
+    tags: ["LWC", "Experience Cloud", "Debugging"]
+  },
+  {
+    number: "03",
+    href: "/work/invoice-export-refactor",
+    title: "Invoice Export Refactor",
+    summary: "Audit and rewrite of an LWC and its Apex controller. Fixed sharing model, governor limit risks, error-aware progress UI, and batch failure recovery.",
+    tags: ["Apex", "LWC", "Performance", "Governor Limits"]
+  }
+];
+---
+
+<section id="work" class="border-b border-white/5">
+  <div class="max-w-6xl mx-auto px-6 py-24 md:py-32">
+    
+    <h2 class="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight">
+      Selected Work
+    </h2>
+    <div class="h-px w-12 bg-accent mt-4 mb-16" aria-hidden="true"></div>
+
+    <div>
+      {cases.map((c) => (
+        
+          <a href={c.href}
+          class="group block py-10 border-t border-white/5 hover:bg-white/[0.02] transition-colors"
+        >
+          <article class="grid grid-cols-[60px_1fr] md:grid-cols-[80px_1fr_auto] gap-x-4 md:gap-x-12 items-start">
+            
+            <span class="font-mono text-sm text-accent pt-2">
+              {c.number}.
+            </span>
+            
+            <div class="space-y-3">
+              <h3 class="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight group-hover:text-accent transition-colors">
+                {c.title}
+              </h3>
+              <p class="text-base text-ink/80 leading-relaxed max-w-2xl">
+                {c.summary}
+              </p>
+              <div class="flex flex-wrap gap-2 font-mono text-xs pt-2">
+                {c.tags.map((t) => (
+                  <span class="px-2.5 py-1 bg-white/5 text-muted border border-white/10 rounded-sm">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <span class="hidden md:flex items-center gap-2 text-sm text-muted group-hover:text-accent transition-colors pt-3 whitespace-nowrap">
+              Read case study
+              <span aria-hidden="true">→</span>
+            </span>
+            
+          </article>
+        </a>
+      ))}
+      <div class="border-t border-white/5"></div>
+    </div>
+
+  </div>
+</section>

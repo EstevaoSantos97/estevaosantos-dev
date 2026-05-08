@@ -1,0 +1,47 @@
+---
+layout: ../../layouts/CaseStudy.astro
+title: "Contract Retention API"
+number: "01"
+summary: "Apex REST endpoint for SAP-driven contract freezing with conditional pricing. Wrapped DML and notifications in an error-isolated transaction."
+tags: ["Apex REST", "SAP Integration", "Async"]
+---
+
+## Context
+
+When a customer calls to cancel their subscription, the retention team's first move isn't accepting the cancellation. They offer a contract freeze.
+
+A freeze pauses billing without ending the contract. The customer stays in the system, and both sides get time to talk before the relationship ends. Most of the time the customer eventually cancels anyway. But the freeze gives the team a controlled moment to renegotiate before that happens, and sometimes it works.
+
+The catch: the freeze decision lives in Salesforce, but the actual billing pause happens in SAP. Two systems, one user action.
+
+## Problem
+
+On every freeze, the retention agent needed to:
+
+- Update the contract status in Salesforce
+- Trigger SAP to stop billing on its side
+- Apply pricing rules based on payment method (credit card and invoice customers have different freeze conditions)
+- Send the customer a confirmation email
+- Make sure that if any step failed, the others didn't leave the data in a broken state
+
+The original implementation had no transactional discipline. If the SAP call timed out after the Salesforce record updated, you ended up with a contract marked "frozen" in CRM while SAP kept billing. If the email transport failed, the customer got nothing.
+
+When these inconsistencies appeared, the operations team would flag them and the dev team had to run corrective scripts by hand to bring the systems back in sync. Slow, manual, and entirely avoidable.
+
+## Approach
+
+Built an Apex REST endpoint (`@HttpPost`) that the retention agent calls through a Screen Flow as a single entry point.
+
+The endpoint deserializes the freeze request from JSON, validates the incoming data before touching any records, then executes in three steps:
+
+1. Wraps the Salesforce contract update and the SAP-bound webhook inside one transaction. If SAP returns an error, the Salesforce record rolls back. Both systems update or neither does.
+2. Applies conditional pricing based on the contract's payment method. The branching logic lives in the endpoint rather than scattered across Flow nodes.
+3. Sends the confirmation email only after the transaction commits. A failed email transport doesn't roll back the database. A failed database update prevents the email from going out.
+
+The Screen Flow handles the UI. The endpoint handles the state.
+
+## Outcome
+
+Retention agents now click one button. Either the freeze completes across both systems, or nothing changes. No half-frozen contracts.
+
+The corrective scripts stopped being necessary. The consistency guarantee is built into the transaction rather than enforced after the fact.

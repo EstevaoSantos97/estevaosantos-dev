@@ -1,0 +1,127 @@
+---
+const currentRoles = [
+  {
+    company: "Loovi",
+    role: "Salesforce Developer",
+    period: "Oct 2025 — Now",
+    bullets: [
+      "Redesigned the case object's permission architecture: moved from profile sprawl to a least-privilege model with private OWD, a thin base profile, and modular permission sets. Configured ownership-based sharing rules to grant the read/write access that private orgs make tricky.",
+      "Built custom Apex REST endpoints (@HttpPost) to ingest data from an external portal. Handles complex JSON deserialization and creates cases plus satellite records in one transaction, keeping relational integrity and atomicity.",
+      "Designed Record-Triggered Flows for SLA management, integrated with Apex actions for the heavier business logic. Built LWCs embedded in Screen Flows (progress indicators) to guide multi-step user flows."
+    ],
+    tags: ["Apex", "LWC", "Apex REST", "Flow", "Permissions", "IAM"]
+  },
+  {
+    company: "Etho IT Solutions",
+    role: "Salesforce Developer",
+    period: "Mar 2025 — Aug 2025",
+    bullets: [
+      "Sustained client Salesforce orgs through recurring bug analysis and error correction, keeping business operations stable.",
+      "Built and maintained new Apex and LWC features as part of the org's continuous improvement cycle.",
+      "Contributed to technical and functional improvement initiatives across development cycles, plus internal user support."
+    ],
+    tags: ["Apex", "LWC", "Sustaining"]
+  },
+  {
+    company: "EY",
+    role: "Technology Risk Trainee",
+    period: "Jul 2024 — Feb 2025",
+    bullets: [
+      "Audited IT controls in large corporate clients under SOX requirements, focused on technology risk and compliance.",
+      "Identified gaps in internal controls and helped build mitigation plans, strengthening information security governance.",
+      "Drafted strategic reports for risk leadership and internal audit teams, with findings used in their decision-making."
+    ],
+    tags: ["SOX", "IT Audit", "Compliance", "Governance"]
+  }
+];
+
+const earlierRoles = [
+  { company: "Poupex", role: "Salesforce Developer", period: "May — Jul 2024", line: "Customer registration automations and integrations in Salesforce. Focused on reducing manual errors and accelerating client onboarding." },
+  { company: "Finlândia Seguros", role: "Salesforce Developer", period: "Dec 2023 — Jan 2024", line: "Sales pipeline customizations, performance dashboards, and lead-cycle automations for an insurance brokerage." },
+  { company: "CI&T", role: "Salesforce Developer", period: "Feb — Aug 2023", line: "International digital transformation projects in agile teams: process automation, system integrations, Clean Code and DevOps practices." },
+  { company: "OSF Digital", role: "Salesforce Developer", period: "Sep 2022 — Jan 2023", line: "Custom Salesforce Core solutions and external integrations on agile international projects." },
+  { company: "IBM", role: "Salesforce Developer", period: "Sep 2021 — Aug 2022", line: "OmniStudio (Vlocity): OmniScripts, DataRaptors, Integration Procedures, FlexCards, plus LWCs and Apex classes/triggers extending the platform." },
+  { company: "Everymind", role: "Salesforce Developer", period: "Feb — Oct 2021", line: "Salesforce platform sustaining: bug fixes, support, and ongoing maintenance work." },
+  { company: "JFOX IT Partners", role: "Salesforce Intern", period: "Feb 2020 — Feb 2021", line: "Salesforce internship. First hands-on with Community Cloud (now Experience Cloud) and LWC, plus general platform fundamentals." }
+];
+---
+
+<section id="experience" class="border-b border-white/5">
+  <div class="max-w-6xl mx-auto px-6 py-24 md:py-32">
+    
+    <h2 class="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight">
+      Experience
+    </h2>
+    <div class="h-px w-12 bg-accent mt-4 mb-16" aria-hidden="true"></div>
+
+    <div class="space-y-16">
+      {currentRoles.map((r) => (
+        <article class="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 md:gap-12">
+          
+          <p class="text-xs uppercase tracking-widest text-muted md:pt-2">
+            {r.period}
+          </p>
+          
+          <div>
+            <h3 class="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight">
+              {r.company}
+              <span class="font-sans text-base font-normal normal-case tracking-normal text-muted">
+                · {r.role}
+              </span>
+            </h3>
+            
+            <ul class="mt-6 space-y-3 text-base text-ink/90 leading-relaxed">
+              {r.bullets.map((b) => (
+                <li class="flex gap-3">
+                  <span class="text-accent shrink-0 select-none" aria-hidden="true">→</span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+            
+            <div class="mt-6 flex flex-wrap gap-2 font-mono text-xs">
+              {r.tags.map((t) => (
+                <span class="px-2.5 py-1 bg-white/5 text-muted border border-white/10 rounded-sm">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+        </article>
+      ))}
+    </div>
+
+    <details class="group mt-16">
+      <summary class="flex items-center cursor-pointer py-4 border-t border-white/5 hover:bg-white/[0.02] transition-colors">
+        <span class="font-display text-xl font-bold uppercase tracking-tight text-ink group-hover:text-accent transition-colors">
+          Earlier Salesforce experience
+        </span>
+        <span class="ml-3 text-sm text-muted">
+          ({earlierRoles.length} positions)
+        </span>
+        <span class="accordion-arrow ml-auto text-accent text-lg" aria-hidden="true">↓</span>
+      </summary>
+
+      <div class="mt-8 space-y-6">
+        {earlierRoles.map((r) => (
+          <article class="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-2 md:gap-12 py-4 border-t border-white/5">
+            <p class="text-xs uppercase tracking-widest text-muted md:pt-1">
+              {r.period}
+            </p>
+            <div>
+              <h4 class="text-base font-medium text-ink">
+                {r.company}
+                <span class="font-normal text-muted"> · {r.role}</span>
+              </h4>
+              <p class="mt-1 text-sm text-muted leading-relaxed">
+                {r.line}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </details>
+
+  </div>
+</section>
