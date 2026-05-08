@@ -1,0 +1,47 @@
+---
+layout: ../../../layouts/CaseStudy.astro
+title: "API de Retenção de Contratos"
+number: "01"
+summary: "Endpoint Apex REST para congelamento de contratos via SAP com precificação condicional. DML e notificações encapsulados em uma transação com isolamento de erros."
+tags: ["Apex REST", "SAP Integration", "Async"]
+---
+
+## Contexto
+
+Quando um cliente liga para cancelar a assinatura, a primeira ação do time de retenção não é aceitar o cancelamento. Eles oferecem um congelamento de contrato.
+
+O congelamento pausa a cobrança sem encerrar o contrato. O cliente permanece no sistema, e ambos os lados ganham tempo para conversar antes que o relacionamento termine. Na maioria das vezes, o cliente acaba cancelando de qualquer forma. Mas o congelamento dá ao time um momento controlado para renegociar antes que isso aconteça — e às vezes funciona.
+
+O problema: a decisão de congelamento vive no Salesforce, mas a pausa real na cobrança acontece no SAP. Dois sistemas, uma ação do usuário.
+
+## Problema
+
+A cada congelamento, o agente de retenção precisava:
+
+- Atualizar o status do contrato no Salesforce
+- Acionar o SAP para parar a cobrança do lado dele
+- Aplicar regras de precificação baseadas no método de pagamento (clientes com cartão de crédito e boleto têm condições de congelamento diferentes)
+- Enviar um e-mail de confirmação ao cliente
+- Garantir que, se alguma etapa falhasse, as outras não deixassem os dados em estado inconsistente
+
+A implementação original não tinha disciplina transacional. Se a chamada ao SAP expirasse após a atualização do registro no Salesforce, você acabava com um contrato marcado como "congelado" no CRM enquanto o SAP continuava cobrando. Se o transporte de e-mail falhasse, o cliente não recebia nada.
+
+Quando essas inconsistências apareciam, o time de operações sinalizava e o time de desenvolvimento tinha que rodar scripts corretivos manualmente para resincronizar os sistemas. Lento, manual e totalmente evitável.
+
+## Abordagem
+
+Construí um endpoint Apex REST (`@HttpPost`) que o agente de retenção aciona através de um Screen Flow como ponto de entrada único.
+
+O endpoint deserializa a requisição de congelamento do JSON, valida os dados recebidos antes de tocar em qualquer registro, e então executa em três etapas:
+
+1. Encapsula a atualização do contrato no Salesforce e o webhook para o SAP dentro de uma única transação. Se o SAP retornar um erro, o registro no Salesforce faz rollback. Ambos os sistemas atualizam ou nenhum atualiza.
+2. Aplica precificação condicional baseada no método de pagamento do contrato. A lógica de ramificação vive no endpoint em vez de espalhada por nós de Flow.
+3. Envia o e-mail de confirmação apenas após o commit da transação. Uma falha no transporte de e-mail não faz rollback do banco de dados. Uma falha na atualização do banco impede o envio do e-mail.
+
+O Screen Flow cuida da interface. O endpoint cuida do estado.
+
+## Resultado
+
+Os agentes de retenção agora clicam um botão. O congelamento completa em ambos os sistemas, ou nada muda. Sem contratos meio-congelados.
+
+Os scripts corretivos deixaram de ser necessários. A garantia de consistência está embutida na transação em vez de ser imposta após o fato.

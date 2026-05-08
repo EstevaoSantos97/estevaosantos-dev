@@ -1,0 +1,60 @@
+---
+import { useTranslations } from "../i18n";
+import type { Locale } from "../i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const links = [
+  {
+    label: "estevaosantosp7@gmail.com",
+    href: "mailto:estevaosantosp7@gmail.com",
+    external: false,
+  },
+  {
+    label: "linkedin.com/in/estevao-santos97",
+    href: "https://linkedin.com/in/estevao-santos97",
+    external: true,
+  },
+  {
+    label: "github.com/EstevaoSantos97",
+    href: "https://github.com/EstevaoSantos97",
+    external: true,
+  }
+];
+---
+
+<section id="contact">
+  <div class="max-w-6xl mx-auto px-6 py-24 md:py-32">
+ 
+    <h2 class="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight">
+      {t.contact.title}
+    </h2>
+    <div class="h-px w-12 bg-accent mt-4 mb-16" aria-hidden="true"></div>
+ 
+    <p class="text-lg text-muted max-w-xl mb-12">
+      {t.contact.subtitle}
+    </p>
+ 
+    <ul class="space-y-4">
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener noreferrer" : undefined}
+            class="group inline-flex items-center gap-3 text-xl md:text-2xl font-medium text-ink hover:text-accent transition-colors"
+          >
+            <span class="text-accent group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+ 
+  </div>
+</section>

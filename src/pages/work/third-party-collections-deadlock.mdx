@@ -1,0 +1,51 @@
+---
+layout: ../../layouts/CaseStudy.astro
+title: "Collections Portal: Async Refactor"
+number: "02"
+summary: "LWC in a third-party collections portal hit governor limits on load and had a JavaScript syntax error. Fixed with async fetching and a one-line code correction."
+tags: ["LWC", "Experience Cloud", "Debugging"]
+---
+
+## Context
+
+A third-party debt collection agency accesses case data through a dedicated
+Experience Cloud portal. Their agents work cases assigned to them through
+that interface — viewing, updating, and progressing collections without
+direct access to the core org.
+
+The portal had one main LWC responsible for loading the cases the agency
+needed to work.
+
+## Problem
+
+The component had two separate issues causing it to fail.
+
+The first was a governor limits problem. The component tried to load too
+many cases in a single synchronous call. Salesforce enforces hard limits on
+how much data a single transaction can process, and the volume of cases for
+this agency's queue was hitting that ceiling. The component threw a limits
+error and returned nothing.
+
+The second was a JavaScript bug. During code review, I found a
+`String.valueOf()` call in the component's JavaScript. That method exists
+in Apex, not in JavaScript. The runtime didn't know what to do with it and
+threw an error on certain execution paths.
+
+Both issues surfaced through debug logs, code review, and analysis with
+Cursor.
+
+## Approach
+
+Fixed the governor limits problem by breaking the data fetch into
+asynchronous calls. Instead of one large synchronous request, the component
+now loads cases in controlled batches, staying within Salesforce limits
+regardless of queue size.
+
+Fixed the JavaScript bug by replacing `String.valueOf()` with the correct
+JavaScript equivalent.
+
+## Outcome
+
+The component loads data correctly. No limits errors, no JavaScript
+exceptions. The agency's agents can work their queue without the portal
+breaking on them.

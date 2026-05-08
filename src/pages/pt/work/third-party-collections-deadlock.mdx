@@ -1,0 +1,33 @@
+---
+layout: ../../../layouts/CaseStudy.astro
+title: "Portal de Cobranças: Refatoração Async"
+number: "02"
+summary: "LWC em um portal de cobranças terceirizado atingiu governor limits no carregamento e tinha um erro de sintaxe JavaScript. Corrigido com fetching assíncrono e uma correção de código."
+tags: ["LWC", "Experience Cloud", "Debugging"]
+---
+
+## Contexto
+
+Uma agência terceirizada de cobrança acessa dados de Cases através de um portal dedicado no Experience Cloud. Os agentes trabalham Cases atribuídos a eles por essa interface — visualizando, atualizando e progredindo cobranças sem acesso direto à org principal.
+
+O portal tinha um LWC principal responsável por carregar os Cases que a agência precisava trabalhar.
+
+## Problema
+
+O componente tinha dois problemas separados causando a falha.
+
+O primeiro era um problema de governor limits. O componente tentava carregar muitos Cases em uma única chamada síncrona. O Salesforce impõe limites rígidos sobre quanta informação uma única transação pode processar, e o volume de Cases na fila dessa agência estava atingindo esse teto. O componente lançava um erro de limites e não retornava nada.
+
+O segundo era um bug de JavaScript. Durante a revisão de código, encontrei uma chamada `String.valueOf()` no JavaScript do componente. Esse método existe no Apex, não no JavaScript. O runtime não sabia o que fazer com isso e lançava um erro em certos caminhos de execução.
+
+Ambos os problemas foram identificados através de debug logs, revisão de código e análise com o Cursor.
+
+## Abordagem
+
+Corrigi o problema de governor limits quebrando a busca de dados em chamadas assíncronas. Em vez de uma grande requisição síncrona, o componente agora carrega Cases em lotes controlados, permanecendo dentro dos limites do Salesforce independente do tamanho da fila.
+
+Corrigi o bug de JavaScript substituindo `String.valueOf()` pelo equivalente correto em JavaScript.
+
+## Resultado
+
+O componente carrega dados corretamente. Sem erros de limites, sem exceções JavaScript. Os agentes da agência conseguem trabalhar sua fila sem que o portal quebre.

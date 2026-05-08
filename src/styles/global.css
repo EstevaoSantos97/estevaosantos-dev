@@ -22,6 +22,7 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px
   }
 
   body {
@@ -39,7 +40,7 @@
     list-style: none;
   }
   summary::-webkit-details-marker {
-    display:none;
+    display: none;
   }
 
   .accordion-arrow {

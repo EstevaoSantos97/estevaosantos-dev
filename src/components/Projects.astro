@@ -1,0 +1,88 @@
+---
+import { useTranslations } from "../i18n";
+import type { Locale } from "../i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="projects" class="border-b border-white/5">
+  <div class="max-w-6xl mx-auto px-6 py-24 md:py-32">
+
+    <h2 class="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight">
+      {t.projects.title}
+    </h2>
+    <div class="h-px w-12 bg-accent mt-4 mb-16" aria-hidden="true"></div>
+
+    <article class="border-t border-white/5 py-12">
+      <p class="font-mono text-xs text-accent uppercase tracking-widest mb-4">
+        {t.projects.featured.eyebrow}
+      </p>
+      <h3 class="font-display text-4xl md:text-5xl font-bold uppercase tracking-tight mb-6">
+        {t.projects.featured.title}
+      </h3>
+      <p class="text-lg text-ink/80 leading-relaxed max-w-2xl mb-8">
+        {t.projects.featured.description}
+      </p>
+      <ul class="space-y-2 mb-8 max-w-2xl">
+        {t.projects.featured.capabilities.map((c) => (
+          <li class="flex gap-3 text-sm text-muted leading-relaxed">
+            <span class="text-accent shrink-0 select-none" aria-hidden="true">→</span>
+            <span>{c}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="flex flex-wrap gap-2 font-mono text-xs mb-8">
+        {t.projects.featured.tags.map((tag) => (
+          <span class="px-2.5 py-1 bg-white/5 text-muted border border-white/10 rounded-sm">
+            {tag}
+          </span>
+        ))}
+      </div>
+      <div class="flex flex-wrap items-center gap-6">
+        <a
+          href={t.projects.featured.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-paper text-sm font-medium hover:bg-accent/90 transition-colors"
+        >
+          {t.projects.featured.liveLabel} <span aria-hidden="true">↗</span>
+        </a>
+        <p class="text-xs text-muted max-w-sm">{t.projects.featured.note}</p>
+      </div>
+    </article>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+      {t.projects.others.map((p) => (
+        <article class="bg-paper p-8 flex flex-col gap-4">
+          <h3 class="font-display text-2xl font-bold uppercase tracking-tight">
+            {p.title}
+          </h3>
+          <p class="text-sm text-ink/80 leading-relaxed flex-1">
+            {p.description}
+          </p>
+          <div class="flex flex-wrap gap-2 font-mono text-xs">
+            {p.tags.map((tag) => (
+              <span class="px-2.5 py-1 bg-white/5 text-muted border border-white/10 rounded-sm">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <a
+            href={p.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm text-accent hover:text-accent/80 transition-colors"
+          >
+            {p.codeLabel} →
+          </a>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>

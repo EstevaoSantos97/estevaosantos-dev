@@ -1,0 +1,45 @@
+---
+layout: ../../layouts/CaseStudy.astro
+title: "Invoice Export Refactor"
+number: "03"
+summary: "Audit triggered by a field bug. Found SOQL queries inside loops and a sharing model that hid most of the data agents needed. Fixed both."
+tags: ["Apex", "LWC", "Governor Limits", "Sharing"]
+---
+
+## Context
+
+The invoice export feature was a key tool for the third-party collections
+team. Agents used it to pull case and invoice data from Salesforce into
+exportable formats for their own tracking and reporting.
+
+## Problem
+
+A bug surfaced in the field: the component wasn't returning the right data.
+Investigation found two structural problems.
+
+The first was the sharing model. The Apex controller ran with default
+sharing rules, which meant it only returned cases where the current user
+was the record owner. That was wrong. Collections agents needed visibility
+across all third-party collections queues, not just their own. Most of the
+data they needed was invisible to them.
+
+The second was SOQL queries inside loops. The controller ran database
+queries inside iteration blocks — a governor limits violation under higher
+data volumes.
+
+## Approach
+
+Audited both the LWC and its Apex controller.
+
+Fixed the sharing model by adjusting the controller's sharing context to
+return cases across all relevant queues instead of only owned records.
+
+Rewrote the SOQL queries to pull data in bulk before the loop, eliminating
+the governor limits risk.
+
+## Outcome
+
+The component now returns the full set of cases the collections team
+actually needs. The SOQL-in-loop problem is gone. The bug that surfaced in
+the field was resolved, and the controller is no longer at risk of hitting
+governor limits under load.

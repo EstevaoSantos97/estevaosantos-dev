@@ -1,0 +1,31 @@
+---
+layout: ../../../layouts/CaseStudy.astro
+title: "Portal de Cobranças: Auditoria de Dados"
+number: "03"
+summary: "Auditoria iniciada por um bug em campo. Encontrei queries SOQL dentro de loops e um modelo de sharing que ocultava a maioria dos dados que os agentes precisavam. Corrigi ambos."
+tags: ["Apex", "LWC", "Governor Limits", "Sharing"]
+---
+
+## Contexto
+
+A funcionalidade de exportação de faturas era uma ferramenta chave para o time de cobranças terceirizado. Os agentes a usavam para extrair dados de Cases e faturas do Salesforce em formatos exportáveis para seu próprio rastreamento e relatórios.
+
+## Problema
+
+Um bug apareceu em campo: o componente não estava retornando os dados corretos. A investigação encontrou dois problemas estruturais.
+
+O primeiro era o modelo de sharing. O controller Apex rodava com as regras de sharing padrão, o que significava que ele só retornava Cases onde o usuário atual era o owner do registro. Isso estava errado. Os agentes de cobrança precisavam de visibilidade em todas as filas de cobranças terceirizadas, não apenas nas suas. A maioria dos dados que eles precisavam era invisível para eles.
+
+O segundo eram queries SOQL dentro de loops. O controller executava queries de banco de dados dentro de blocos de iteração — uma violação de governor limits sob volumes maiores de dados.
+
+## Abordagem
+
+Auditei tanto o LWC quanto seu controller Apex.
+
+Corrigi o modelo de sharing ajustando o contexto de sharing do controller para retornar Cases de todas as filas relevantes em vez de apenas registros owned pelo usuário.
+
+Reescrevi as queries SOQL para buscar dados em massa antes do loop, eliminando o risco de governor limits.
+
+## Resultado
+
+O componente agora retorna o conjunto completo de Cases que o time de cobranças realmente precisa. O problema de SOQL dentro de loop foi eliminado. O bug que apareceu em campo foi resolvido, e o controller não está mais em risco de atingir governor limits sob carga.
