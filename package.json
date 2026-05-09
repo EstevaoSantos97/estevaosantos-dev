@@ -16,6 +16,7 @@
     "@fontsource/big-shoulders-display": "^5.2.5",
     "@fontsource/inter": "^5.2.8",
     "@tailwindcss/vite": "^4.2.4",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^6.3.1",
     "tailwindcss": "^4.2.4"
   }
