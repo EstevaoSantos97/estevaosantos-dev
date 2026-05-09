@@ -9,16 +9,16 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const navItems = [
-  { href: "#about", label: t.nav.about },
-  { href: "#experience", label: t.nav.experience },
-  { href: "#work", label: t.nav.work },
-  { href: "#projects", label: t.nav.projects },
-  { href: "#contact", label: t.nav.contact },
-];
-
 const switchHref = lang === "en" ? "/pt" : "/";
-const homeHref = lang === "en" ? "/" : "/pt";
+const homeHref = lang === "en" ? "/" : "/pt/";
+
+const navItems = [
+  { href: homeHref + "#about", label: t.nav.about },
+  { href: homeHref + "#experience", label: t.nav.experience },
+  { href: homeHref + "#work", label: t.nav.work },
+  { href: homeHref + "#projects", label: t.nav.projects },
+  { href: homeHref + "#contact", label: t.nav.contact },
+];
 ---
 
 <header class="sticky top-0 z-50 bg-paper/80 backdrop-blur-md border-b border-white/5">

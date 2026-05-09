@@ -12,6 +12,11 @@ interface Props {
 
 const { title = "Estevão Santos", lang = "en" } = Astro.props;
 const t = useTranslations(lang);
+
+const currentPath = Astro.url.pathname;
+const site = "https://eestevaosantos.dev";
+const enPath = lang === "pt" ? (currentPath.replace(/^\/pt/, "") || "/") : currentPath;
+const ptPath = lang === "en" ? ("/pt" + currentPath) : currentPath;
 ---
 
 <!doctype html>
@@ -21,6 +26,8 @@ const t = useTranslations(lang);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="alternate" hreflang="en" href={site + enPath} />
+    <link rel="alternate" hreflang="pt" href={site + ptPath} />
     <title>{title}</title>
     <ClientRouter />
   </head>
